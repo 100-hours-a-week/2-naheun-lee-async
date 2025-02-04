@@ -35,20 +35,31 @@ public class Main {
 
     // 메뉴 조회
     private static void viewMenu(MenuManager menuManager) {
-        System.out.println("================================");
+        System.out.println("----------------------------------");
         System.out.println("<샐러드 메뉴>");
-        for (Salad salad : menuManager.getSalads()) {
-            System.out.println("▶ " + salad);
+        if(menuManager.getSalads().isEmpty()){
+            System.out.println("메뉴 없음");
         }
-        System.out.println("\n================================");
+        else{
+            for (Salad salad : menuManager.getSalads()) {
+                System.out.println("▶ " + salad);
+            }
+        }
+        System.out.println("----------------------------------");
         System.out.println("<샐러드 세트 메뉴>");
-        for (SaladSet saladSet : menuManager.getSaladSets()) {
-            System.out.println(saladSet);
+        if(menuManager.getSaladSets().isEmpty()){
+            System.out.println("메뉴 없음");
+        }
+        else{
+            for (SaladSet saladSet : menuManager.getSaladSets()) {
+                System.out.println(saladSet);
+            }
         }
     }
 
     // 메뉴 생성
     private static void createMenu(Scanner scanner, MenuManager menuManager) {
+        System.out.println("----------------------------------");
         System.out.println("생성하려는 메뉴를 선택하세요.");
         System.out.println("1. 샐러드 2. 샐러드 세트");
         System.out.print("메뉴 선택: ");
@@ -67,55 +78,67 @@ public class Main {
     private static void createSalad(Scanner scanner, MenuManager menuManager) {
         System.out.print("샐러드명: ");
         String name = scanner.nextLine();
-        if (!Validator.isValidString(name)) return;  // 빈 문자열 체크
+        if (!Validator.isValidString(name)) return; 
 
         System.out.print("가격: ");
-        int price = getValidNumber(scanner);  // 숫자만 입력 받기
+        int price = getValidNumber(scanner);  
 
         System.out.print("드레싱: ");
         String dressing = scanner.nextLine();
-        if (!Validator.isValidString(dressing)) return;  // 빈 문자열 체크
+        if (!Validator.isValidString(dressing)) return;  
 
         menuManager.addSalad(name, price, dressing);
+        // 완성된 세트 출력
+        System.out.println("----------------------------------");
+        System.out.println(name+"("+dressing+"): "+price+"(원) 메뉴가 생성되었습니다.");
+
+        
     }
 
     // 샐러드 세트 생성
     private static void createSaladSet(Scanner scanner, MenuManager menuManager) {
-        System.out.print("샐러드 이름: ");
-        String saladName = scanner.nextLine();
-        if (!Validator.isValidSalad(saladName, menuManager)) {
-            System.out.println("해당 샐러드가 존재하지 않습니다.");
-            return;
+        System.out.println("[샐러드 목록]");
+        for (int i = 0; i < menuManager.getSalads().size(); i++) {
+            System.out.println((i + 1) + ". " + menuManager.getSalads().get(i).getName());
         }
-
-        System.out.print("스프 이름: ");
-        String soupName = scanner.nextLine();
-        if (!Validator.isValidSoup(soupName, menuManager)) {
-            System.out.println("해당 스프가 존재하지 않습니다.");
-            return;
+        System.out.print("샐러드 선택: ");
+        int saladChoice = getValidChoice(scanner, 1, menuManager.getSalads().size()) - 1;
+        Salad selectedSalad = menuManager.getSalads().get(saladChoice);
+        String dressing = selectedSalad.getDressing();  // 선택한 샐러드의 드레싱을 그대로 사용
+    
+        System.out.println("[스프 목록]");
+        for (int i = 0; i < menuManager.getSoups().size(); i++) {
+            System.out.println((i + 1) + ". " + menuManager.getSoups().get(i).getName());
         }
+        System.out.print("스프 선택: ");
+        int soupChoice = getValidChoice(scanner, 1, menuManager.getSoups().size()) - 1;
+        Soup selectedSoup = menuManager.getSoups().get(soupChoice);
 
-        System.out.print("음료 이름: ");
-        String drinkName = scanner.nextLine();
-        if (!Validator.isValidDrink(drinkName, menuManager)) {
-            System.out.println("해당 음료가 존재하지 않습니다.");
-            return;
+        System.out.println("[음료 목록]");
+        for (int i = 0; i < menuManager.getDrinks().size(); i++) {
+            System.out.println((i + 1) + ". " + menuManager.getDrinks().get(i).getName());
         }
-
-        int price = menuManager.findSalad(saladName).getPrice() +
-                menuManager.findSoup(soupName).getPrice() +
-                menuManager.findDrink(drinkName).getPrice();
-
-        menuManager.addSaladSet(saladName, price, "기본 드레싱", soupName, drinkName);
-        System.out.println("샐러드 세트가 성공적으로 추가되었습니다.");
+        System.out.print("음료 선택: ");
+        int drinkChoice = getValidChoice(scanner, 1, menuManager.getDrinks().size()) - 1;
+        Drink selectedDrink = menuManager.getDrinks().get(drinkChoice);
+    
+        // 가격 계산 (샐러드 + 스프 + 음료)
+        int price = selectedSalad.getPrice() + selectedSoup.getPrice() + selectedDrink.getPrice();
+    
+        menuManager.addSaladSet(selectedSalad.getName(), price, dressing, selectedSoup.getName(), selectedDrink.getName());
+    
+        // 완성된 세트 출력
+        System.out.println("----------------------------------");
+        System.out.println(selectedSalad.getName()+"("+dressing+") + "+selectedSoup.getName()+" + "+selectedDrink.getName()+" 세트 : "+price+"(원) 메뉴가 생성되었습니다.");
     }
 
     // 메뉴 삭제
     private static void deleteMenu(Scanner scanner, MenuManager menuManager) {
+        System.out.println("----------------------------------");
         System.out.println("어떤 메뉴를 삭제하시겠습니까?");
         System.out.println("1. 샐러드 2. 샐러드 세트");
         System.out.print("선택: ");
-        int choice = getValidChoice(scanner, 1, 2);  // 숫자만 입력 받기
+        int choice = getValidChoice(scanner, 1, 2);  
 
         if (choice == 1) {
             // 샐러드 삭제
@@ -128,38 +151,40 @@ public class Main {
 
     // 샐러드 삭제
     private static void deleteSalad(Scanner scanner, MenuManager menuManager) {
-        System.out.println("삭제할 샐러드를 선택하세요.");
         for (int i = 0; i < menuManager.getSalads().size(); i++) {
             System.out.println((i + 1) + ". " + menuManager.getSalads().get(i));
         }
+        System.out.print("삭제할 샐러드를 선택하세요: ");
         int saladChoice = getValidChoice(scanner, 1, menuManager.getSalads().size()) - 1;
         menuManager.removeSalad(menuManager.getSalads().get(saladChoice).getName());
+        System.out.println("해당 메뉴가 삭제되었습니다.");
     }
 
     // 샐러드 세트 삭제
     private static void deleteSaladSet(Scanner scanner, MenuManager menuManager) {
-        System.out.println("삭제할 샐러드 세트를 선택하세요.");
         for (int i = 0; i < menuManager.getSaladSets().size(); i++) {
             System.out.println((i + 1) + ". " + menuManager.getSaladSets().get(i));
         }
+        System.out.print("삭제할 샐러드 세트를 선택하세요: ");
         int saladSetChoice = getValidChoice(scanner, 1, menuManager.getSaladSets().size()) - 1;
         menuManager.removeSaladSet(menuManager.getSaladSets().get(saladSetChoice).getName());
+        System.out.println("해당 메뉴가 삭제되었습니다.");
     }
 
-    // 숫자 입력만 받는 유효성 검사
+    // 숫자 범위 유효성 검사
     private static int getValidChoice(Scanner scanner, int min, int max) {
         int choice = -1;
         while (choice < min || choice > max) {
             while (!scanner.hasNextInt()) {
-                System.out.println("잘못된 입력입니다. 숫자를 입력해주세요.");
-                scanner.next(); // 잘못된 입력 처리
+                System.out.print("숫자만 입력 가능합니다. 다시 입력해주세요: ");
+                scanner.next(); 
             }
             choice = scanner.nextInt();
             if (choice < min || choice > max) {
-                System.out.println("잘못된 범위입니다. 다시 입력해주세요.");
+                System.out.print("잘못된 범위입니다. 다시 입력해주세요: ");
             }
         }
-        scanner.nextLine();  // newline 문자 소비
+        scanner.nextLine();  
         return choice;
     }
 
@@ -168,17 +193,19 @@ public class Main {
         int number = -1;
         while (number < 0) {
             while (!scanner.hasNextInt()) {
-                System.out.println("가격은 숫자만 입력 가능합니다.");
-                scanner.next();  // 잘못된 입력 처리
+                System.out.print("가격은 숫자만 입력 가능합니다. 다시 입력해주세요: ");
+                scanner.next();  
             }
             number = scanner.nextInt();
             if (number < 0) {
-                System.out.println("가격은 0 이상의 숫자여야 합니다.");
+                System.out.print("가격은 0 이상의 숫자여야 합니다. 다시 입력해주세요: ");
             }
         }
-        scanner.nextLine();  // newline 문자 소비
+        scanner.nextLine();  
         return number;
     }
+
+    
 }
 
 

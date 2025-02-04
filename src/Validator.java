@@ -1,18 +1,4 @@
 public class Validator {
-    // 샐러드 검증
-    public static boolean isValidSalad(String name, MenuManager menuManager) {
-        return menuManager.getSalads().stream().anyMatch(salad -> salad.getName().equals(name));
-    }
-
-    // 스프 검증
-    public static boolean isValidSoup(String name, MenuManager menuManager) {
-        return menuManager.getSoups().stream().anyMatch(soup -> soup.getName().equals(name));
-    }
-
-    // 음료 검증
-    public static boolean isValidDrink(String name, MenuManager menuManager) {
-        return menuManager.getDrinks().stream().anyMatch(drink -> drink.getName().equals(name));
-    }
 
     public static boolean isValidNumber(String input) {
         try {

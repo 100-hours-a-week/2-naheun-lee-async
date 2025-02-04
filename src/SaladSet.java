@@ -32,7 +32,7 @@ public class SaladSet extends Salad {
 
     @Override
     public String toString() {
-        return String.format("%s(%s)+%s+%s 세트: %d원", name, dressing, soup, drink, price);
+        return String.format("%s(%s)+%s+%s 세트: %d원", name, dressing, soup.name, drink.name, price);
     }
 }
 

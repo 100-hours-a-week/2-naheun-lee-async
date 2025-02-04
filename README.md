@@ -21,8 +21,14 @@
 
 
 ## 실행 시나리오
+1. 메뉴 조회
+![alt text](image-1.png)
 
+2. 메뉴 생성
+![alt text](image-2.png)
 
-## 회고
+3. 메뉴 삭제
+![alt text](image-3.png)
+- 해당 메뉴 삭제 확인
 
 
