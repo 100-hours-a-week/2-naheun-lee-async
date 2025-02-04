@@ -22,15 +22,12 @@
 
 ## 실행 시나리오
 1. 메뉴 조회
----
-![alt text](image-1.png)
+<img src="image-1.png" width="300">
 
 2. 메뉴 생성
----
-![alt text](image-2.png)
+<img src="image-1.png2" width="300">
 
 3. 메뉴 삭제
----
-![alt text](image-3.png)
+<img src="image-1.png3" width="300">
 
 
