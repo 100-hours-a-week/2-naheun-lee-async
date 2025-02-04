@@ -25,9 +25,9 @@
 <img src="image-1.png" width="500">
 
 2. 메뉴 생성
-<img src="image-2.png2" width="500">
+<img src="image-2.png" width="500">
 
 3. 메뉴 삭제
-<img src="image-3.png3" width="500">
+<img src="image-3.png" width="500">
 
 
