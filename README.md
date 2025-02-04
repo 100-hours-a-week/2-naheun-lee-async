@@ -22,12 +22,12 @@
 
 ## 실행 시나리오
 1. 메뉴 조회
-<img src="image-1.png" width="300">
+<img src="image.png" width="300">
 
 2. 메뉴 생성
-<img src="image-1.png2" width="300">
+<img src="image.png2" width="300">
 
 3. 메뉴 삭제
-<img src="image-1.png3" width="300">
+<img src="image.png3" width="300">
 
 
