@@ -1,25 +1,21 @@
-public class Salad {
-    private int productId;  // 상품 번호 추가
-    private String name;
-    private int price;
+public class Salad extends Product {
+    protected String dressing;
 
-    public Salad(int productId, String name, int price) {
-        this.productId = productId;
-        this.name = name;
-        this.price = price;
+    public Salad(String name, int price, String dressing) {
+        super(name, price);
+        this.dressing = dressing;
     }
 
-    public int getProductId() {
-        return productId;
+    public String getDressing() {
+        return dressing;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public int getPrice() {
-        return price;
+    @Override
+    public String toString() {
+        return String.format("%s(%s): %d원", name, dressing, price);
     }
 }
+
+
 
 
