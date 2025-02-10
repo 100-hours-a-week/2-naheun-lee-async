@@ -1,3 +1,4 @@
+package product;
 public class SaladSet extends Salad {
     private Soup soup;
     private Drink drink;
@@ -6,7 +7,7 @@ public class SaladSet extends Salad {
         super(name, price, dressing);
         this.soup = soup;
         this.drink = drink;
-        this.price = super.getPrice() + soup.getPrice() + drink.getPrice();
+        this.price = price;
     }
 
     public Soup getSoup() {

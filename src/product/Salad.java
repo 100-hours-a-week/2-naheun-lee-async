@@ -1,3 +1,4 @@
+package product;
 public class Salad extends Product {
     protected String dressing;
 

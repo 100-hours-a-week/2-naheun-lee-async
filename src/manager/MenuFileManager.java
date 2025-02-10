@@ -1,32 +1,34 @@
+package manager;
+
 import java.io.*;
-import java.util.*;
+import product.Drink;
+import product.Salad;
+import product.SaladSet;
+import product.Soup;
+import sharedData.SharedMenuData;
 
-public class MenuManager {
-    private static MenuManager instance;
-    private List<Salad> salads;
-    private List<SaladSet> saladSets;
-    private List<Soup> soups;
-    private List<Drink> drinks;
+public class MenuFileManager {
+    private static MenuFileManager instance;
+    private SharedMenuData sharedMenuData = SharedMenuData.getInstance();
 
-    private MenuManager() {
-        salads = new ArrayList<>();
-        saladSets = new ArrayList<>();
-        soups = new ArrayList<>();
-        drinks = new ArrayList<>();
-    }
+    private static final String SALADS_FILE = "src/data/salads.txt";
+    private static final String SALADSETS_FILE = "src/data/saladsets.txt";
+    private static final String SOUPS_FILE = "src/data/soups.txt";
+    private static final String DRINKS_FILE = "src/data/drinks.txt";
 
-    public static MenuManager getInstance() {
+    public static MenuFileManager getInstance() {
         if (instance == null) {
-            instance = new MenuManager();
+            instance = new MenuFileManager();
         }
         return instance;
     }
 
+    //데이터 파일 읽기
     public void loadMenu() {
-        loadSalads("src/salads.txt");
-        loadSaladSets("src/saladsets.txt");
-        loadSoups("src/soups.txt");
-        loadDrinks("src/drinks.txt");
+        loadSalads(SALADS_FILE);
+        loadSoups(SOUPS_FILE);
+        loadDrinks(DRINKS_FILE);
+        loadSaladSets(SALADSETS_FILE);
     }
 
     private void loadSalads(String filename) {
@@ -35,7 +37,7 @@ public class MenuManager {
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length == 3) {
-                    salads.add(new Salad(parts[0], Integer.parseInt(parts[2]), parts[1]));
+                    sharedMenuData.getSalads().add(new Salad(parts[0], Integer.parseInt(parts[2]), parts[1]));
                 }
             }
         } catch (IOException e) {
@@ -53,11 +55,11 @@ public class MenuManager {
                     int price = Integer.parseInt(parts[4]);
                     String dressing = parts[1];
 
-                    Soup soup = findSoup(parts[2]);
-                    Drink drink = findDrink(parts[3]);
+                    Soup soup = sharedMenuData.findSoup(parts[2]);
+                    Drink drink = sharedMenuData.findDrink(parts[3]);
 
                     if (soup != null && drink != null) {
-                        saladSets.add(new SaladSet(saladName, price, dressing, soup, drink));
+                        sharedMenuData.getSaladSets().add(new SaladSet(saladName, price, dressing, soup, drink));
                     }
                 }
             }
@@ -72,7 +74,7 @@ public class MenuManager {
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length == 2) {
-                    soups.add(new Soup(parts[0], Integer.parseInt(parts[1])));
+                    sharedMenuData.getSoups().add(new Soup(parts[0], Integer.parseInt(parts[1])));
                 }
             }
         } catch (IOException e) {
@@ -86,7 +88,7 @@ public class MenuManager {
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length == 2) {
-                    drinks.add(new Drink(parts[0], Integer.parseInt(parts[1])));
+                    sharedMenuData.getDrinks().add(new Drink(parts[0], Integer.parseInt(parts[1])));
                 }
             }
         } catch (IOException e) {
@@ -94,57 +96,18 @@ public class MenuManager {
         }
     }
 
-    public List<Salad> getSalads() {
-        return salads;
-    }
-
-    public List<SaladSet> getSaladSets() {
-        return saladSets;
-    }
-
-    public List<Soup> getSoups() {
-        return soups;
-    }
-    
-    public List<Drink> getDrinks() {
-        return drinks;
-    }
-    
-
-    public void addSalad(String name, int price, String dressing) {
-        salads.add(new Salad(name, price, dressing));
-    }
-
-    public void addSaladSet(String name, int price, String dressing, String soupName, String drinkName) {
-        Soup soup = findSoup(soupName);
-        Drink drink = findDrink(drinkName);
-        if (soup != null && drink != null) {
-            saladSets.add(new SaladSet(name, price, dressing, soup, drink));
-        }
-    }
-
-    public void removeSalad(String name) {
-        salads.removeIf(salad -> salad.getName().equals(name));
-        saladSets.removeIf(set -> set.isSaladFromSet(name));
-    }
-
-    public void removeSaladSet(String name) {
-        saladSets.removeIf(set -> set.getName().equals(name));
-    }
-
-
-
+    //데이터 파일 쓰기
     public void saveMenu() {
-        saveSalads("src/salads.txt");
-        saveSaladSets("src/saladsets.txt");
-        saveSoups("src/soups.txt");
-        saveDrinks("src/drinks.txt");
+        saveSalads(SALADS_FILE);
+        saveSoups(SOUPS_FILE);
+        saveDrinks(DRINKS_FILE);
+        saveSaladSets(SALADSETS_FILE);
         System.out.println("메뉴 데이터가 저장되었습니다.");
     }
 
     private void saveSalads(String filename) {
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"))) {
-            for (Salad salad : salads) {
+            for (Salad salad : sharedMenuData.getSalads()) {
                 bw.write(salad.getName() + "," + salad.getDressing() + "," + salad.getPrice());
                 bw.newLine();
             }
@@ -155,7 +118,7 @@ public class MenuManager {
 
     private void saveSaladSets(String filename) {
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"))) {
-            for (SaladSet set : saladSets) {
+            for (SaladSet set : sharedMenuData.getSaladSets()) {
                 bw.write(set.getName() + "," + set.getDressing() + "," +
                          set.getSoup().getName() + "," + set.getDrink().getName() + "," + set.getPrice());
                 bw.newLine();
@@ -167,7 +130,7 @@ public class MenuManager {
 
     private void saveSoups(String filename) {
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"))) {
-            for (Soup soup : soups) {
+            for (Soup soup : sharedMenuData.getSoups()) {
                 bw.write(soup.getName() + "," + soup.getPrice());
                 bw.newLine();
             }
@@ -178,27 +141,13 @@ public class MenuManager {
 
     private void saveDrinks(String filename) {
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"))) {
-            for (Drink drink : drinks) {
+            for (Drink drink : sharedMenuData.getDrinks()) {
                 bw.write(drink.getName() + "," + drink.getPrice());
                 bw.newLine();
             }
         } catch (IOException e) {
             System.out.println("음료 정보를 저장하는 동안 오류가 발생했습니다.");
         }
-    }
-
-    public Soup findSoup(String name) {
-        return soups.stream().filter(s -> s.getName().equals(name)).findFirst().orElse(null);
-    }
-
-    public Drink findDrink(String name) {
-        return drinks.stream().filter(d -> d.getName().equals(name)).findFirst().orElse(null);
-    }
-    public Salad findSalad(String name) {
-        return salads.stream()
-                     .filter(salad -> salad.getName().equals(name))
-                     .findFirst()
-                     .orElse(null);  
     }
 
 }
