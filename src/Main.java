@@ -1,3 +1,4 @@
+
 import java.util.*;
 import manager.MenuFileManager;
 import manager.MenuServiceManager;
@@ -12,9 +13,13 @@ public class Main {
         MenuServiceManager serviceManager = MenuServiceManager.getInstance();
 
         while (true) {
-            System.out.println("\n================================");
-            System.out.println("<샐러드 메뉴 관리 시스템>");
-            System.out.println("1. 메뉴 조회 2. 메뉴 생성 3. 메뉴 삭제 4. 종료");
+            System.out.println("\033[32m====================================\033[0m");
+            System.out.println("\033[32m       샐러드 메뉴 관리 시스템       \033[0m");
+            System.out.println("\033[32m====================================\033[0m");
+            System.out.println("\033[34m1.\033[0m 메뉴 조회");
+            System.out.println("\033[34m2.\033[0m 메뉴 생성");
+            System.out.println("\033[34m3.\033[0m 메뉴 삭제");
+            System.out.println("\033[34m4.\033[0m 종료");
             System.out.print("메뉴를 선택하세요: ");
             int choice = Validation.getValidChoice(scanner, 1, 4);  
 

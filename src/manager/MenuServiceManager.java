@@ -22,24 +22,24 @@ public class MenuServiceManager {
 
     // 메뉴 조회
     public void viewMenu() {
-        System.out.println("----------------------------------");
+        System.out.println("\n----------------------------------\n");
         System.out.println("<샐러드 메뉴>");
         if(sharedMenuData.getSalads().isEmpty()){
-            System.out.println("메뉴 없음");
+            System.out.println("\033[31m메뉴 없음\033[0m");
         }
         else{
             for (Salad salad : sharedMenuData.getSalads()) {
-                System.out.println("# " + salad);
+                System.out.println("\033[32m#\033[0m " + salad);
             }
         }
         System.out.println("----------------------------------");
         System.out.println("<샐러드 세트 메뉴>");
         if(sharedMenuData.getSaladSets().isEmpty()){
-            System.out.println("메뉴 없음");
+            System.out.println("\033[31m메뉴 없음\033[0m");
         }
         else{
             for (SaladSet saladSet : sharedMenuData.getSaladSets()) {
-                System.out.println(saladSet);
+                System.out.println("\033[32m#\033[0m " +saladSet);
             }
         }
     }
