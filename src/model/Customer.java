@@ -56,10 +56,10 @@ public class Customer implements Runnable {
         if (selectedSalad.getStock() > 0) {
             int printSalad = selectedSalad.getStock()-1; //현재 재고-1
             selectedSalad.adjustStock(-1);
-            System.out.println("\n\033[32m[스레드 "+Thread.currentThread().getName().split("-")[3].replaceAll("\\D+", "") +"]\033[0m"+ 
+            System.out.println("\n\033[32m[카운터 "+Thread.currentThread().getName().split("-")[3].replaceAll("\\D+", "") +"]\033[0m"+ 
             " - "+getName()+": 주문 완료! " + selectedSalad.getName() + "\033[31m (" + printSalad + "개 남음)\033[0m");
         } else {
-                System.out.println("\n\033[32m[스레드 "+Thread.currentThread().getName().split("-")[3].replaceAll("\\D+", "") +"]\033[0m"+
+                System.out.println("\n\033[32m[카운터 "+Thread.currentThread().getName().split("-")[3].replaceAll("\\D+", "") +"]\033[0m"+
                 " - " +getName()+"\033[31m - 재고 부족! " + selectedSalad.getName() + " 재고가 없습니다. 다음에 다시 주문해주세요.\033[0m");
         }
   
@@ -89,10 +89,10 @@ public class Customer implements Runnable {
         if (selectedSaladSet.getStock() > 0) {
             int printSaladSet = selectedSaladSet.getStock()-1; //현재 재고-1
             selectedSaladSet.adjustStock(-1);;
-            System.out.println("\n\033[32m[스레드 "+Thread.currentThread().getName().split("-")[3].replaceAll("\\D+", "")+"]\033[0m" + 
+            System.out.println("\n\033[32m[카운터 "+Thread.currentThread().getName().split("-")[3].replaceAll("\\D+", "")+"]\033[0m" + 
             " - " +getName()+": 주문 완료! "+ selectedSaladSet.getName() + "\033[31m (" + printSaladSet + "개 남음)\033[0m");
         } else {
-            System.out.println("\n\033[32m[스레드 "+Thread.currentThread().getName().split("-")[3].replaceAll("\\D+", "") +"]\033[0m"+
+            System.out.println("\n\033[32m[카운터 "+Thread.currentThread().getName().split("-")[3].replaceAll("\\D+", "") +"]\033[0m"+
             " - " +getName()+"\033[31m - 재고 부족! " + selectedSaladSet.getName() + " 재고가 없습니다. 다음에 다시 주문해주세요.\033[0m");
         }
     }

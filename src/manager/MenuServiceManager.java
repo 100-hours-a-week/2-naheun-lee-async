@@ -236,7 +236,7 @@ public class MenuServiceManager {
         System.out.println("\n주문이 모두 완료되었습니다.");
     }
 
-    private synchronized void increaseStock() {
+    private void increaseStock() {
         boolean restocked = false;
 
         // 샐러드 목록에서 재고가 부족한 메뉴를 찾아 3개 추가

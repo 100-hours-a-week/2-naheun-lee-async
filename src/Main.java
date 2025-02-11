@@ -22,7 +22,7 @@ public class Main {
             System.out.println("\033[34m4.\033[0m 주문 받기");
             System.out.println("\033[34m5.\033[0m 종료");
             System.out.print("메뉴를 선택하세요: ");
-            int choice = Validation.getValidChoice(scanner, 1, 4);  
+            int choice = Validation.getValidChoice(scanner, 1, 5);  
 
             switch (choice) {
                 case 1:
