@@ -36,8 +36,8 @@ public class MenuFileManager {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length == 3) {
-                    sharedMenuData.getSalads().add(new Salad(parts[0], Integer.parseInt(parts[2]), parts[1]));
+                if (parts.length == 4) {
+                    sharedMenuData.getSalads().add(new Salad(parts[0], Integer.parseInt(parts[2]), parts[1], Integer.parseInt(parts[3])));
                 }
             }
         } catch (IOException e) {
@@ -50,7 +50,7 @@ public class MenuFileManager {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length == 5) {
+                if (parts.length == 6) {
                     String saladName = parts[0];
                     int price = Integer.parseInt(parts[4]);
                     String dressing = parts[1];
@@ -59,7 +59,7 @@ public class MenuFileManager {
                     Drink drink = sharedMenuData.findDrink(parts[3]);
 
                     if (soup != null && drink != null) {
-                        sharedMenuData.getSaladSets().add(new SaladSet(saladName, price, dressing, soup, drink));
+                        sharedMenuData.getSaladSets().add(new SaladSet(saladName, price, dressing, soup, drink, Integer.parseInt(parts[5])));
                     }
                 }
             }
@@ -108,7 +108,7 @@ public class MenuFileManager {
     private void saveSalads(String filename) {
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"))) {
             for (Salad salad : sharedMenuData.getSalads()) {
-                bw.write(salad.getName() + "," + salad.getDressing() + "," + salad.getPrice());
+                bw.write(salad.getName() + "," + salad.getDressing() + "," + salad.getPrice() + ',' + salad.getStock());
                 bw.newLine();
             }
         } catch (IOException e) {
@@ -120,7 +120,7 @@ public class MenuFileManager {
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"))) {
             for (SaladSet set : sharedMenuData.getSaladSets()) {
                 bw.write(set.getName() + "," + set.getDressing() + "," +
-                         set.getSoup().getName() + "," + set.getDrink().getName() + "," + set.getPrice());
+                         set.getSoup().getName() + "," + set.getDrink().getName() + "," + set.getPrice() + ',' + set.getStock());
                 bw.newLine();
             }
         } catch (IOException e) {

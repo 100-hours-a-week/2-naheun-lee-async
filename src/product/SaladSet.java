@@ -3,11 +3,10 @@ public class SaladSet extends Salad {
     private Soup soup;
     private Drink drink;
 
-    public SaladSet(String name, int price, String dressing, Soup soup, Drink drink) {
-        super(name, price, dressing);
+    public SaladSet(String name, int price, String dressing, Soup soup, Drink drink, int stock) {
+        super(name, price, dressing, stock);
         this.soup = soup;
         this.drink = drink;
-        this.price = price;
     }
 
     public Soup getSoup() {
@@ -16,11 +15,6 @@ public class SaladSet extends Salad {
 
     public Drink getDrink() {
         return drink;
-    }
-
-    @Override
-    public int getPrice() {
-        return super.getPrice() + soup.getPrice() + drink.getPrice(); 
     }
 
     //샐러드 삭제 여부
@@ -33,7 +27,7 @@ public class SaladSet extends Salad {
 
     @Override
     public String toString() {
-        return String.format("%s(%s)+%s+%s 세트: %d원", name, dressing, soup.name, drink.name, price);
+        return String.format("%s(%s)+%s+%s 세트: %d원 \033[31m[재고: %d]\033[0m", name, dressing, soup.name, drink.name, price, stock);
     }
 }
 

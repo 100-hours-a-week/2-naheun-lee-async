@@ -1,6 +1,11 @@
 package manager;
 
+import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import model.Customer;
 import product.Drink;
 import product.Salad;
 import product.SaladSet;
@@ -22,7 +27,7 @@ public class MenuServiceManager {
 
     // 메뉴 조회
     public void viewMenu() {
-        System.out.println("\n----------------------------------\n");
+        System.out.println("\n\033[32m====================================\033[0m");
         System.out.println("<샐러드 메뉴>");
         if(sharedMenuData.getSalads().isEmpty()){
             System.out.println("\033[31m메뉴 없음\033[0m");
@@ -32,7 +37,7 @@ public class MenuServiceManager {
                 System.out.println("\033[32m#\033[0m " + salad);
             }
         }
-        System.out.println("----------------------------------");
+        System.out.println("------------------------------------");
         System.out.println("<샐러드 세트 메뉴>");
         if(sharedMenuData.getSaladSets().isEmpty()){
             System.out.println("\033[31m메뉴 없음\033[0m");
@@ -46,9 +51,10 @@ public class MenuServiceManager {
 
     // 메뉴 생성
     public void createMenu() {
-        System.out.println("----------------------------------");
+        System.out.println("\n\033[32m====================================\033[0m");
         System.out.println("생성하려는 메뉴를 선택하세요.");
-        System.out.println("1. 샐러드 2. 샐러드 세트");
+        System.out.println("\033[34m1.\033[0m 샐러드");
+        System.out.println("\033[34m2.\033[0m 샐러드 세트");
         System.out.print("메뉴 선택: ");
         int choice = Validation.getValidChoice(scanner, 1, 2); 
 
@@ -72,12 +78,14 @@ public class MenuServiceManager {
 
         System.out.print("드레싱: ");
         String dressing = scanner.nextLine();
-        if (!Validation.isValidString(dressing)) return;  
+        if (!Validation.isValidString(dressing)) return;
+        
+        int stock = 5; // 기본 재고 개수는 5
 
-        sharedMenuData.getSalads().add(new Salad(name, price, dressing));
+        sharedMenuData.getSalads().add(new Salad(name, price, dressing, stock));
         // 완성된 세트 출력
-        System.out.println("----------------------------------");
-        System.out.println(name+"("+dressing+"): "+price+"(원) 메뉴가 생성되었습니다.");
+        System.out.println("------------------------------------");
+        System.out.println(name+"("+dressing+"): "+price+"원 \033[31m[재고: "+stock+"]\033[0m 메뉴가 생성되었습니다.");
         
     }
 
@@ -114,21 +122,23 @@ public class MenuServiceManager {
     
         // 가격 계산 (샐러드 + 스프 + 음료)
         int price = selectedSalad.getPrice() + soup.getPrice() + drink.getPrice();
+        int stock = 5;
         
         if (soup != null && drink != null) {
-            sharedMenuData.getSaladSets().add(new SaladSet(selectedSalad.getName(), price, dressing, soup, drink));
+            sharedMenuData.getSaladSets().add(new SaladSet(selectedSalad.getName(), price, dressing, soup, drink, stock));
         }
     
-        System.out.println("----------------------------------");
-        System.out.println(selectedSalad.getName()+"("+dressing+") + "+soup.getName()+" + "+drink.getName()+" 세트 : "+price+"(원) 메뉴가 생성되었습니다.");
+        System.out.println("------------------------------------");
+        System.out.println(selectedSalad.getName()+"("+dressing+") + "+soup.getName()+" + "+drink.getName()+" 세트 : "+price+"원 \033[31m[재고: \"+stock+\"]\033[0m 메뉴가 생성되었습니다.");
     }
 
     // 메뉴 삭제
     public void deleteMenu() {
-        System.out.println("----------------------------------");
+        System.out.println("\n\033[32m====================================\033[0m");
         System.out.println("어떤 메뉴를 삭제하시겠습니까?");
-        System.out.println("1. 샐러드 2. 샐러드 세트");
-        System.out.print("선택: ");
+        System.out.println("\033[34m1.\033[0m 샐러드");
+        System.out.println("\033[34m2.\033[0m 샐러드 세트");
+        System.out.print("메뉴 선택: ");
         int choice = Validation.getValidChoice(scanner, 1, 2);  
 
         if (choice == 1) {
@@ -151,7 +161,9 @@ public class MenuServiceManager {
         }
         System.out.print("삭제할 샐러드를 선택하세요: ");
         int saladChoice = Validation.getValidChoice(scanner, 1, sharedMenuData.getSalads().size()) - 1;
-        removeSalad(sharedMenuData.getSalads().get(saladChoice).getName());
+        String name = sharedMenuData.getSalads().get(saladChoice).getName();
+        sharedMenuData.getSalads().removeIf(salad -> salad.getName().equals(name));
+        sharedMenuData.getSaladSets().removeIf(set -> set.isSaladFromSet(name));
         System.out.println("해당 메뉴가 삭제되었습니다.");
     }
 
@@ -166,19 +178,35 @@ public class MenuServiceManager {
         }
         System.out.print("삭제할 샐러드 세트를 선택하세요: ");
         int saladSetChoice = Validation.getValidChoice(scanner, 1, sharedMenuData.getSaladSets().size()) - 1;
-        removeSaladSet(sharedMenuData.getSaladSets().get(saladSetChoice).getName());
+        String name = sharedMenuData.getSaladSets().get(saladSetChoice).getName();
+        sharedMenuData.getSaladSets().removeIf(set -> set.getName().equals(name));
         System.out.println("해당 메뉴가 삭제되었습니다.");
     }
 
-    //샐러드 삭제
-    public void removeSalad(String name) {
-        sharedMenuData.getSalads().removeIf(salad -> salad.getName().equals(name));
-        sharedMenuData.getSaladSets().removeIf(set -> set.isSaladFromSet(name));
-    }
+    // 주문 받기
+    public void orders() {
+        //ExecutorService-고정 스레드 풀(스레드 3개)
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        
+        // 랜덤으로 소비자 수 설정 (1~10명)
+        int numberOfCustomers = new Random().nextInt(10) + 1;
+        System.out.println("\n" + numberOfCustomers + "명의 소비자가 주문을 시작합니다.\n");
 
-     //샐러드 세트 삭제
-    public void removeSaladSet(String name) {
-        sharedMenuData.getSaladSets().removeIf(set -> set.getName().equals(name));
+        for (int i = 0; i < numberOfCustomers; i++) {
+            executorService.submit(new Customer("소비자"+(i+1)));
+        }
+
+        executorService.shutdown();
+        try {
+            // 최대 60초 동안 기다리기기
+            if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+                executorService.shutdownNow(); // 작업 중인 스레드를 강제로 종료
+            }
+        } catch (InterruptedException e) {
+            executorService.shutdownNow();
+        }
+
+        System.out.println("\n주문이 모두 완료되었습니다.");
     }
     
 }
