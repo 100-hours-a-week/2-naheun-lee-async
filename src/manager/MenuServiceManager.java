@@ -185,20 +185,45 @@ public class MenuServiceManager {
 
     // 주문 받기
     public void orders() {
-        //ExecutorService-고정 스레드 풀(스레드 3개)
+        // 고정 스레드 풀(스레드 3개) 생성
         ExecutorService executorService = Executors.newFixedThreadPool(3);
         
         // 랜덤으로 소비자 수 설정 (1~10명)
         int numberOfCustomers = new Random().nextInt(10) + 1;
         System.out.println("\n" + numberOfCustomers + "명의 소비자가 주문을 시작합니다.\n");
 
+        // 5초마다 재고를 증가시키는 스레드를 생성
+        Thread stockThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5000); // 처음 5초 대기
+                } catch (InterruptedException e) {
+                    return;
+                }
+
+                while (!Thread.currentThread().isInterrupted()) {
+                    try {
+                        increaseStock(); 
+                        Thread.sleep(5000); // 5초마다
+                    } catch (InterruptedException e) {
+                        break; 
+                    }
+                }
+            }
+        });
+
+        // 재고 증가 스레드 시작
+        stockThread.start();
+
+        // 고객 주문 처리
         for (int i = 0; i < numberOfCustomers; i++) {
-            executorService.submit(new Customer("소비자"+(i+1)));
+            executorService.submit(new Customer("소비자" + (i + 1)));
         }
 
         executorService.shutdown();
         try {
-            // 최대 60초 동안 기다리기기
+            // 최대 60초 동안 기다리기
             if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
                 executorService.shutdownNow(); // 작업 중인 스레드를 강제로 종료
             }
@@ -206,7 +231,50 @@ public class MenuServiceManager {
             executorService.shutdownNow();
         }
 
+        // 주문 완료 후 재고 증가 스레드 종료
+        stockThread.interrupt(); // 스레드 종료
         System.out.println("\n주문이 모두 완료되었습니다.");
+    }
+
+    private synchronized void increaseStock() {
+        boolean restocked = false;
+
+        // 샐러드 목록에서 재고가 부족한 메뉴를 찾아 3개 추가
+        for (Salad salad : sharedMenuData.getSalads()) {
+            if (salad.getStock() == 0) {
+                salad.adjustStock(3);;
+                System.out.println("\n"+salad.getName() + "의 재고가 3개 추가되었습니다. [현재 재고: "+salad.getStock()+"]");
+                restocked = true;
+                break; 
+            }
+        }
+
+        // 샐러드 세트 목록에서 재고가 부족한 메뉴를 찾아 3개 추가
+        if (!restocked) {
+            for (SaladSet saladSet : sharedMenuData.getSaladSets()) {
+                if (saladSet.getStock() == 0) {
+                    saladSet.adjustStock(3);
+                    System.out.println("\n"+saladSet.getName() + "의 재고가 3개 추가되었습니다. [현재 재고: "+saladSet.getStock()+"]");
+                    restocked = true;
+                    break; 
+                }
+            }
+        }
+
+        // 재고가 부족한 메뉴가 없으면 랜덤으로 하나의 메뉴에 1개씩 추가
+        if (!restocked) {
+            if (Math.random() < 0.5) {
+                // 샐러드 메뉴 랜덤으로 선택
+                Salad randomSalad = sharedMenuData.getSalads().get(new Random().nextInt(sharedMenuData.getSalads().size()));
+                randomSalad.adjustStock(1);
+                System.out.println("\n"+randomSalad.getName() + "의 재고가 1개 추가되었습니다. [현재 재고: "+randomSalad.getStock()+"]");
+            } else {
+                // 샐러드 세트 메뉴 랜덤으로 선택
+                SaladSet randomSaladSet = sharedMenuData.getSaladSets().get(new Random().nextInt(sharedMenuData.getSaladSets().size()));
+                randomSaladSet.adjustStock(1);
+                System.out.println("\n"+randomSaladSet.getName() + "의 재고가 1개 추가되었습니다. [현재 재고: "+randomSaladSet.getStock()+"]");
+            }
+        }
     }
     
 }

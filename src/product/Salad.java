@@ -1,4 +1,5 @@
 package product;
+
 public class Salad extends Product {
     protected String dressing;
     protected int stock;
@@ -16,12 +17,16 @@ public class Salad extends Product {
     public int getStock(){
         return stock;
     }
-    
-    public void decreaseStock() {
-        if (stock > 0) {
-            stock--;  // 재고 1개 감소
-        } else {
-            System.out.println("재고가 부족합니다.");
+
+    public synchronized void adjustStock(int amount) {
+        if (amount > 0) {
+            stock += amount;  // 재고 증가
+        } else if (amount < 0) {
+            if (stock >= Math.abs(amount)) {  // 재고가 충분한지 다시 확인
+                stock += amount;  // 감소
+            } else {
+                System.out.println(Thread.currentThread().getName() + " - 재고 부족! " + name + " 재고가 없습니다. 다시 주문해주세요.");
+            }
         }
     }
 

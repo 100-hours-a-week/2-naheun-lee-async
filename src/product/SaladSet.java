@@ -9,12 +9,18 @@ public class SaladSet extends Salad {
         this.drink = drink;
     }
 
+
     public Soup getSoup() {
         return soup;
     }
 
     public Drink getDrink() {
         return drink;
+    }
+
+    @Override
+    public String getName() {
+        return name+"("+dressing+")+"+soup.name+"+"+drink.name;
     }
 
     //샐러드 삭제 여부
