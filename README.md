@@ -6,7 +6,7 @@
 
 ## 클래스 설명
 ### <상속 관계도>
-<P><img srt =https://github.com/100-hours-a-week/2-naheun-lee-async/issues/2#issue-2845345118 ><p>
+<P><img src =https://github.com/100-hours-a-week/2-naheun-lee-async/issues/2#issue-2845345118 ><p>
 - **Product**: 가장 최상위 클래스이며, 상품의 이름과 가격을 속성으로 가집니다.
 - **Salad**: `Product`를 상속받아 `dressing`을 추가 속성으로 가집니다. `Salad`는 샐러드 메뉴를 나타내며, 샐러드와 드레싱은 하나의 메뉴로 고정된 형태입니다.
 - **Soup**: `Product`를 상속받아 '스프' 상품을 나타냅니다.
@@ -24,25 +24,25 @@
 ```
  2-naheun-lee-async
  ┣ 📂 src
- ┃ ┣ 📂 data <- **1차 리팩토링**
+ ┃ ┣ 📂 data //1차 리팩토링
  ┃ ┃ ┣  drinks.txt
  ┃ ┃ ┣  salads.txt
  ┃ ┃ ┣  salsadsets.txt
  ┃ ┃ ┗  soups.txt
- ┃ ┣ 📂 manager <- **1차 리팩토링**
+ ┃ ┣ 📂 manager //1차 리팩토링
  ┃ ┃ ┣  MenuFileManager.java
- ┃ ┃ ┗  MenuServiceManager.java <- **2차 구현**
+ ┃ ┃ ┗  MenuServiceManager.java //2차 구현
  ┃ ┣ 📂 model
- ┃ ┃ ┗  Customer.java <- **2차 구현**
- ┃ ┣ 📂 product <- **1차 리팩토링**
+ ┃ ┃ ┗  Customer.java //2차 구현
+ ┃ ┣ 📂 product //1차 리팩토링
  ┃ ┃ ┣  Drink.java
  ┃ ┃ ┣  Product.java
  ┃ ┃ ┣  Salad.java
  ┃ ┃ ┣  SaladSet.java
  ┃ ┃ ┗  Soup.java
- ┃ ┣ 📂 sharedData <- **1차 리팩토링**
+ ┃ ┣ 📂 sharedData //1차 리팩토링
  ┃ ┃ ┗  sharedMenuData.java
- ┃ ┣ 📂 validation <- **1차 리팩토링**
+ ┃ ┣ 📂 validation //1차 리팩토링
  ┃ ┃ ┗  Validation.java
  ┃ ┗  Main.java
  ┗ README.md
@@ -65,6 +65,6 @@
    - 재고 증가 및 감소는 **동기화 처리**하여 경쟁 상태가 발생하지 않도록 관리됩니다.
 
 ## 시연 영상
-https://github.com/100-hours-a-week/2-naheun-lee-async/issues/1#issue-2845323418
+<P><img src =https://github.com/100-hours-a-week/2-naheun-lee-async/issues/1#issue-2845323418 ><p>
 
 
