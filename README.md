@@ -6,7 +6,8 @@
 
 ## 클래스 설명
 ### <상속 관계도>
-<P><img src ="https://github.com/100-hours-a-week/2-naheun-lee-async/issues/2#issue-2845345118"></p>
+![상속 관계도](https://github.com/100-hours-a-week/2-naheun-lee-async/issues/2#issue-2845345118)
+
 - **Product**: 가장 최상위 클래스이며, 상품의 이름과 가격을 속성으로 가집니다.
 - **Salad**: `Product`를 상속받아 `dressing`을 추가 속성으로 가집니다. `Salad`는 샐러드 메뉴를 나타내며, 샐러드와 드레싱은 하나의 메뉴로 고정된 형태입니다.
 - **Soup**: `Product`를 상속받아 '스프' 상품을 나타냅니다.
