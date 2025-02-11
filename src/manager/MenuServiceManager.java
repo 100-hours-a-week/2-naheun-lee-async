@@ -129,7 +129,7 @@ public class MenuServiceManager {
         }
     
         System.out.println("------------------------------------");
-        System.out.println(selectedSalad.getName()+"("+dressing+") + "+soup.getName()+" + "+drink.getName()+" 세트 : "+price+"원 \033[31m[재고: \"+stock+\"]\033[0m 메뉴가 생성되었습니다.");
+        System.out.println(selectedSalad.getName()+"("+dressing+") + "+soup.getName()+" + "+drink.getName()+" 세트 : "+price+"원 \033[31m[재고: "+stock+"]\033[0m 메뉴가 생성되었습니다.");
     }
 
     // 메뉴 삭제
